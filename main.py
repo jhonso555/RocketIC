@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from matplotlib import pyplot as plt
 
 cap = cv2.VideoCapture('./src/Video_4.mp4')
 
@@ -17,8 +18,10 @@ while(cap.isOpened()):
         lower_red = np.array([150, 150, 200])
         upper_red = np.array([255, 255, 255])
         mask = cv2.inRange(hsv, lower_red, upper_red)
-
         res = cv2.bitwise_and(frame, frame, mask=mask)
+
+        # Region // Thresholding
+        ret, thresh1 - cv2.threshold(cap, 127, 255, cv2.THRESH_BINARY)
 
         cv2.imshow('Frame', frame)
         cv2.imshow('Mask', mask)
