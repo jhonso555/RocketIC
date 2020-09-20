@@ -1,16 +1,11 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-import time
-import os
-import PIL
-
-#441 x, 618 y, 640 w, 352 h
 
 
 cap = cv2.VideoCapture('./src/Video_4.mp4')
 frames = 1
-frame_list = []
+frame_atual = 1
 cX, cY = [], []
 
 coordenadas = open("coords.txt", "w")
@@ -19,7 +14,6 @@ coordenadas = open("coords.txt", "w")
 if (cap.isOpened() == False):
     print("Error opening video file")
 
-# while(cap.isOpened()):
 while(frames <= int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
     ret, frame = cap.read()
     
@@ -38,13 +32,19 @@ while(frames <= int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
         cv2.imshow('Mask', mask)
         cv2.imshow('Res', res)
 
-        for i in range(352):
-            for j in range(640):
-                valor = mask[i][j]
-                #i = y & j = x
-                if valor != 0:
-                    cY.append(mask[i])
-                    cX.append(mask[j])
+
+        if frames % 4 == 0 and frames > 20:
+            for i in range(352):
+                for j in range(640):
+                    valor = mask[i][j]
+                    #i = y & j = x
+                    if valor != 0 and frame_atual == frames and j > 200 and j < 270:
+                        frase =  "frame (%d) foi detectado em: X%d e Y%d\n" % (frames, i, j)
+                        print(j)
+                        coordenadas.write(frase)
+                        cY.append(i)
+                        cX.append(j)
+                        frame_atual += 1
     
 
         if cv2.waitKey(25) & 0xFF == ord('q'):
@@ -53,11 +53,12 @@ while(frames <= int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
     else:
         break
     frames += 1
-
-plt.plot(cX, cY)
+    frame_atual = frames
+plt.plot(cY, cX)
 plt.xlabel('Eixo X')
 plt.ylabel('Eixo Y')
 plt.title('Teste!!')
+coordenadas.close()
 plt.show()
 
     
