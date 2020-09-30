@@ -3,7 +3,7 @@
 <strong> O algoritmo consiste em detectar um paraquedas em queda e mostrar sua posição durante um intervalo de frames. </strong>
 
 <ol><h2>Funcionamento</h2>
-  <li>Para a execução deste algoritmo, são necessários os seguintes componentes:
+  <p>Para a execução deste algoritmo, são necessários os seguintes componentes:</p>
     <ol>
     <br>
         <ul>Python 3</ul>
