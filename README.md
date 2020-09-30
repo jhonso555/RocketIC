@@ -36,6 +36,31 @@
             <br>
             <p>Ao final, temos o cálculo do delta para o tempo, resultando no tempo de execução total do algoritmo. Os índices 0 e 1 do vetor <i>cY</i> são zerados, pois não conseguimos remover os ruídos iniciais da imagem.</p>
             <br>
-            <p>Após o cancelamento manual dos ruídos iniciais, o gráfico é construído e tem sua base nos vetores <i>cX</i> e<i> cY</i>.
+            <p>Após o cancelamento manual dos ruídos iniciais, o gráfico é construído e tem sua base nos vetores <i>cX</i> e<i> cY</i>, vale ressaltar que o tamanho dos vetores tem que ser iguais para que o gráfico seja <i>plotado</i>.</p>
     </li>
+  </ol>
+  <br>
+  <li>
+    coords.py
+    <br>
+    <p>O arquivo de coordenadas é dividido em três colunas, sendo elas, respectivamente, F (<i>frames</i>), X e Y. Os dados são coletados pelo arquivo <i>main.py</i> e servem para uma futura planilha no Excel.</p>
+  </li>
+  <br>
+  <li>
+  ./src
+  <br>
+  <p>O diretório <i>src</i> conta com o vídeo utilizado para que o algoritmo funcione.</p>
+  </li>
+  <br>
+  <li>
+  ./data
+    <br>
+    <p>O diretório <i>data</i> armazena os arquvios de texto para as matrizes binárias a cada quatro frames da varredura. Para visualizar o paraquedas nesses arquivos, é recomendável utilizar o comando de busca <i>Ctrl + F</i> e digitar 255 para que os valores encontrados fiquem grifados, facilitando a visualização. Cada arquivo é nomeado com o número do quadro em que foi criado.</p>
+  </li>
+  <br>
+  <li>
+  Próximas atualizações
+  <br>
+  <p>Atualização na otimização do programa; Utilizar resolução dinâmica para que o mesmo código sirva para diferentes vídeos do mesmo tipo; Atomização das funções condicionais e melhoramento das funções; Automatização da passagem de dados de <i>txt</i> para <i>xls</i>; Diminuição do tempo de execução; Utilização de outras linguagens para a parte de laços (C, por exemplo) e aperfeiçoamento do tratamento da imagem (diminuição de ruídos, objeto melhor detectado, sem falhas).</p>
  </ol>
+
