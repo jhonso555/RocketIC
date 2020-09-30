@@ -1,4 +1,6 @@
-RocketIC
+# h1 RocketIC - Documentação
 
-1. Para rodar esse projeto é necessário ter as bibliotecas OpenCV e MatplotLib instaladas.
-2. O projeto consiste na conversão de dados a partir do tracking de um objeto, nesse caso, nosso objeto é o paraquedas.
+O algoritmo consiste em detectar um paraquedas em queda e mostrar sua posição durante um intervalo de frames.
+
+1.0
+  Para 
