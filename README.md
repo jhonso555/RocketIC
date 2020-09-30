@@ -36,7 +36,7 @@
             <br>
             <p>Ao final, temos o cálculo do delta para o tempo, resultando no tempo de execução total do algoritmo. Os índices 0 e 1 do vetor <i>cY</i> são zerados, pois não conseguimos remover os ruídos iniciais da imagem.</p>
             <br>
-            <p>Após o cancelamento manual dos ruídos iniciais, o gráfico é construído e tem sua base nos vetores <i>cX</i> e<i> cY</i>, vale ressaltar que o tamanho dos vetores tem que ser iguais para que o gráfico seja <i>plotado</i>.</p>
+            <p>Após o cancelamento manual dos ruídos iniciais, o gráfico é construído e tem sua base nos vetores <i>cX</i> e<i> cY</i>, vale ressaltar que o tamanho dos vetores tem que ser igual para que o gráfico seja <i>plotado</i>.</p>
     </li>
   </ol>
   <br>
