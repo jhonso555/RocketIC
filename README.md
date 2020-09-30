@@ -6,10 +6,10 @@
   <p>Para a execução deste algoritmo, são necessários os seguintes componentes:</p>
     <ol>
     <br>
-        <ul>Python 3</ul>
-        <ul>Opencv</ul>
-        <ul>Matplotlib</ul>
-        <ul>Numpy</ul>
+        <ul><a href="https://www.python.org/downloads/">Python 3</a></ul>
+        <ul><a href="https://docs.opencv.org/master/d5/de5/tutorial_py_setup_in_windows.html">Opencv</a></ul>
+        <ul><a href="https://matplotlib.org/3.1.1/users/installing.html">Matplotlib</a></ul>
+        <ul><a href="https://numpy.org/install/">NumPy</a></ul>
     </ol>
   </li>
  </ol>
@@ -26,8 +26,16 @@
             <br>
             <p>A variável <i>valor</i> é equivalente ao valor do pixel atual da máscara, sendo assim, caso o valor atual da máscara e valor dos <i>frames</i> sejam iguais, o algoritmo entra na condicional da criação da base de dados para os vetores de posição <i>cX e cY</i>. Para esta primeira condicional, o único critério é o tamanho dos vetores de poisção. Caso eles sejam menores do que dez, então eles receberão os valores atuais de X e Y. A partir de dez índices para cada vetor, novos critérios de condicionais são atribuídos.</p>
             <br>
-            <p>Assim entramos no cálculo de diferença. O cálculo de diferença entre os pontos serve para que as curvas no gráfico não fiquem tão bruscas e tenham valores mais próximos com a real distância entre os pontos.</p>
+            <p>Assim, entramos no cálculo da diferença. Este cálculo  funciona para que as curvas do gráfico final não fiquem tão bruscas e tenham valores mais próximos com a real distância entre os pontos.</p>
             <br>
-            <p>Para a próxima condicional, temos: caso o valor atual de X seja maior que o valor anterior de X e caso o valor atual de Y seja maior que o valor anterior de Y, a diferença é calculada pela subtração do valor atual menos o valor anterior para X e para Y. Após o cálculo, o valor anterior mais a diferença dividida por dois <i>((n-1) + ((n-(n-1)/2)))</i> é adicionado aos vetores de posição. 
+            <p>Para a próxima condicional, temos: caso o valor atual de X seja maior que o valor anterior de X e caso o valor atual de Y seja maior que o valor anterior de Y, a diferença é calculada pela subtração do valor atual menos o valor anterior para X e para Y. Após o cálculo, o valor anterior mais a diferença dividida por dois <i>((n-1) + ((n-(n-1)/2)))</i> é adicionado aos vetores de posição. Após o cálculo, o valor do frame, da posição em X e da posição em Y são adicionados ao arquivo <i>coords.txt</i>. Variável <i>K</i>e<i>frame_atual</i> tem seus valores aumentados em 1. <i>K</i> é o valor do índice atual da base de dados para as comparações dos vetores de X e Y.</p>
+            <br>
+            <p>A segunda condicional, na sequência é o contrário da condição anterior (caso o valor anterior seja maior que o valor atual, tanto para X quanto para Y). A diferença também é calculada de forma invertida, com o valor maior subtraindo o valor menor. Após o cálculo, o processo de finalização da condicional é o mesmo.</P>
+            <br>
+            <p>A função <i>numpy.savetxt</i> salva, a cada quatro quadros, a imagem com base na máscara. O arquivo salvo em questão é um <i>txt</i> com valores 0 e 255, onde 255 é a posição do paraquedas e 0 são os pontos nulos da imagem.</p>
+            <br>
+            <p>Ao final, temos o cálculo do delta para o tempo, resultando no tempo de execução total do algoritmo. Os índices 0 e 1 do vetor <i>cY</i> são zerados, pois não conseguimos remover os ruídos iniciais da imagem.</p>
+            <br>
+            <p>Após o cancelamento manual dos ruídos iniciais, o gráfico é construído e tem sua base nos vetores <i>cX</i> e<i> cY</i>.
     </li>
  </ol>
