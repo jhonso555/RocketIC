@@ -15,6 +15,7 @@ tempoI = time.time()
 #endregion
 
 
+
 if (cap.isOpened() == False):
     print("Error opening video file")
 
@@ -67,7 +68,8 @@ while(frames <= int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
                                 k += 1
                                 frame_atual += 1
                         
-                   
+
+            np.savetxt('./data/' + str(frames) + '.txt', mask, fmt='%d')
         #endregion
     
         if cv2.waitKey(25) & 0xFF == ord('q'):
@@ -82,7 +84,7 @@ while(frames <= int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
 tempoF = time.time()
 delta = tempoF - tempoI
 print(delta)
-
+cY[0], cY[1] = 0, 0
 plt.plot(cX, cY)
 plt.show()
 data.close()
