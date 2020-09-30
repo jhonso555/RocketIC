@@ -18,11 +18,11 @@
     <li>main.py
         <ol>
         <br>
-            <p>Neste arquivo, encontramos o coração do nosso projeto, onde obtemos a criação de uma máscara a partir do vídeo da pasta <i>src</i>, o arquivo main continua em funcionamento até o final do vídeo, ou até que a tecla '<i>q</i>' seja pressionada.</p>
+            <p>Neste arquivo, encontramos o coração do nosso projeto, onde obtemos a criação de uma máscara a partir do vídeo da pasta <i>src</i>. O arquivo <i>main</i> continua em funcionamento até que o vídeo acabe, ou até que a tecla '<i>q</i>' seja pressionada.</p>
             <br>
-            <p>Para que seja construída a máscara que deixa (praticamente) apenas o paraquedas à mostra, é necessário criar um <i>range</i> entre dois vetores em HSV <i>(lower_red</i> e <i>upper_red)</i>. Após a criação da máscara, o algoritmo exibirá as duas janelas, o <i>frame</i> com o vídeo original, <b>em sua resolução nativa</b>, rodando junto com outra janela para a máscara, com os filtros aplicados.</p>
+            <p>Para construirmos a máscara que deixa (praticamente) apenas o paraquedas à mostra, é necessário criar um <i>range</i> entre dois vetores em HSV <i>(lower_red</i> e <i>upper_red)</i>. Após a criação da máscara, o algoritmo exibirá as duas janelas, o <i>frame</i> com o vídeo original, <b>em sua resolução nativa</b>, rodando junto com a janela para a máscara, com os filtros aplicados.</p>
             <br>
-            <p>Para uma melhor execução, o sistema de varredura funciona apenas a cada quatro <i>frames</i> e a partir do <i>frame</i> 20. A varredura percorre toda a imagem preta e branca em busca de valores diferentes de zero, sendo esses detectados como o paraquedas. Dentro dessa condicional, dois laços, um dentro do outro, são iniciados, um contendo o valor do tamanho da janela em Y e o outro contendo o valor do tamanho da janela em X, respectivamente.</p>
+            <p>Para uma melhor execução, o sistema de varredura funciona apenas a cada quatro (04) <i>frames</i> e a partir do <i>frame</i> 20. A varredura percorre toda a imagem preta e branca da máscara em busca de valores diferentes de zero, sendo esses detectados como o paraquedas. Dentro dessa condicional, dois laços, um dentro do outro, são iniciados, um contendo o valor do tamanho da janela em Y e o outro contendo o valor do tamanho da janela em X, respectivamente.</p>
             <br>
             <p>A variável <i>valor</i> é equivalente ao valor do pixel atual da máscara, sendo assim, caso o valor atual da máscara e valor dos <i>frames</i> sejam iguais, o algoritmo entra na condicional da criação da base de dados para os vetores de posição <i>cX e cY</i>. Para esta primeira condicional, o único critério é o tamanho dos vetores de poisção. Caso eles sejam menores do que dez, então eles receberão os valores atuais de X e Y. A partir de dez índices para cada vetor, novos critérios de condicionais são atribuídos.</p>
             <br>
