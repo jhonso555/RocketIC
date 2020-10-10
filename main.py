@@ -1,96 +1,92 @@
-import cv2
+import os, time, shutil, cv2, tkinter, colouring
 import numpy as np
 import matplotlib.pyplot as plt
-import time
 
 #region / defining values
+print("Cleaning '/data'...")
+shutil.rmtree('./data/')
+os.mkdir('data')
 cap = cv2.VideoCapture('./src/Video_4.mp4')
-data = open('coords.txt', 'w') #arquivo de coordenadas em Frame/posição em X/posição em Y para que possa ser utilizado no Excel posteriormente
+data = open('coords.txt', 'w')
 data.write("F  |  X  |  Y\n")
-frames = 1 #frame exato do vídeo
-frame_atual = 1 #valor idêntico ao valor da variável frames para que as comparações sejam feitas frame a frame
-k = 10 #constante das bases de dados
-cX, cY = [], [] #vetores das posições onde o paraquedas é detectado no vídeo
-tempoI = time.time() #contagem do tempo utilizado para a execução do programa
+frames, frame_atual, k = 1, 1, 10
+cX, cY, deltaTempo = [], [], []
+height  = int(cap.get(4))
+width = int(cap.get(3))
+tempoI = time.time()
 #endregion
 
 
-#condicional para testar o funcionamento do vídeo
+
 if (cap.isOpened() == False):
     print("Error opening video file")
 
-while(frames <= int(cap.get(cv2.CAP_PROP_FRAME_COUNT))): #enquanto o número de frames for menor que o número de frames totais, o algoritmo segue rodando
-    #lendo o  vídeo
+while(frames <= int(cap.get(cv2.CAP_PROP_FRAME_COUNT))): 
     ret, frame = cap.read()
     
     if ret == True:
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #transformação de cores
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     
         #region // Color range and image processing 
-        lower_red = np.array([150, 150, 200])
-        upper_red = np.array([180, 255, 255])
-
-        '''Range de cores detectados pela máscara
-        caso a cor esteja dentro do valor estipulado, então
-        o pixel será branco na máscara'''
+        # lower = np.array([150, 150, 200])
+        # upper = np.array([180, 255, 255])
+        lower = np.array([colouring.r1, colouring.g1, colouring.b1])
+        upper = np.array([colouring.r2, colouring.g2, colouring.b2])
 
 
-        mask = cv2.inRange(hsv, lower_red, upper_red) #gerando a máscara
 
-        cv2.imshow('Frame', frame) #mostrando o vídeo
-        cv2.imshow('Mask', mask) #mostrando a máscara
+        mask = cv2.inRange(hsv, lower, upper) 
+        # res = cv2.bitwise_and(frame,frame, mask= mask)
+        cv2.imshow('Frame', frame)
+        cv2.imshow('Mask', mask)
+        # cv2.imshow('Res', res)
         #endregion
 
         #region // object tracking and optimizing its position
-        if frames % 4 == 0 and frames > 19: #varredura ocorre a cada 4 frames depois do frame 19
-            for i in range(352): #352 é a altura do vídeo
-                for j in range(640): #640 é a largura do vídeo
-                    valor = mask[i][j] #variável valor é igual ao número da máscara naquele índice
-                    if valor > 0 and frame_atual == frames: #comparando a cor do pixel e o frame atual
-                        if len(cX) < 10 and len(cY) < 10: #criando uma base de dados para futuras comparações
+        if frames % 4 == 0 and frames > 19:
+            for i in range(height):
+                for j in range(width):  
+                    valor = mask[i][j] 
+                    if valor > 0 and frame_atual == frames:
+                        if len(cX) < 10 and len(cY) < 10: 
                             cX.append(j)
                             cY.append(i)
+                            delteatempoF = time.time()
+                            deltaTempo.append(delteatempoF-tempoI)
 
 
-                        elif len(cX) >= 10 and len(cY) >= 10: #comparando o tamanho das bases de dados
-                            if (j > cX[k-1]) and (i > cY[k-1]): #comparando se o valor atual de X e Y são maiores que os valores do frame anterior para X e Y
-                                
-                                '''O cálculo de diferença é feito para que não
-                                ocorra uma curva tão brusca ao gráfico final'''
-                                
+                        elif len(cX) >= 10 and len(cY) >= 10: 
+                            if (j > cX[k-1]) and (i > cY[k-1]):
+                                                                
                                 diffX = j-cX[k-1]
                                 diffY = i-cY[k-1]
-
+                                deltaTempoF = time.time()
                                 cX.append(cX[k-1] + (diffX/2))
                                 cY.append(cY[k-1] + (diffY/2))
+                                deltaTempo.append(deltaTempoF-tempoI)
 
-                                '''Caso os valores atuais de X e Y sejam maiores que os 
-                                anteriores, então a diferença é anterior + ((atual-anterior)/2)'''
-
-                                data.write("%d  |  %.1f  |  %.1f\n" % (frames, cX[k], cY[k])) #o valor calculado para os dois vetores (de X e de Y) são escritos no arquivo de coordenadas
+                                data.write("%d  |  %.1f  |  %.1f\n" % (frames, cX[k], cY[k])) 
                                 k += 1
-                                frame_atual += 1 #para que a comparação não ocorra novamente, o valor da variável aumenta, sendo diferente do valor do frame real
+                                frame_atual += 1 
 
-                            elif (cX[k-1] > j) and (cY[k-1] > i): #comparação contrária à comparação anterior
+                            elif (cX[k-1] > j) and (cY[k-1] > i):
                                 diffX = cX[k-1]-j
                                 diffY = cY[k-1]-i
+                                deltaTempoF = time.time()
 
 
                                 cX.append(j + (diffX/2))
                                 cY.append(i + (diffY/2))
+                                deltaTempo.append(deltaTempoF-tempoI)
 
-                                '''Cálculo caso o valor anterior seja maior que o atual
-                                então o resultado é atual + ((anterior-atual)/2)'''
                                 
                                 data.write("%d  |  %.1f  |  %.1f\n" % (frames, cX[k], cY[k]))
                                 k += 1
                                 frame_atual += 1
                         
-
-            np.savetxt('./data/' + str(frames) + '.txt', mask, fmt='%d') #salva, em texto, a matriz praticamente booleana, onde 0 é o ambiente e 255 é o paraquedas, também a cada 4 frames
+            np.savetxt('./data/' + str(frames) + '.txt', mask, fmt='%d')
         #endregion
-    
-        #condicional para fechar o programa
+
         if cv2.waitKey(25) & 0xFF == ord('q'):
             break
     
@@ -98,15 +94,15 @@ while(frames <= int(cap.get(cv2.CAP_PROP_FRAME_COUNT))): #enquanto o número de 
         break
 
     frames += 1
-    frame_atual = frames #restaurando o valor para o valor real do frame
- 
+    frame_atual = frames 
+
 tempoF = time.time()
 delta = tempoF - tempoI
-print(delta) #tempo de execução do programa
+print(delta)
+cY[0], cY[1] = 0, 0 
 
-cY[0], cY[1] = 0, 0 #removendo os pontos de ruído no início do algoritmo
-
-plt.plot(cX, cY) #amostragem do gráfico com base nos vetores de posição
+plt.plot(deltaTempo, cX, cY)
+plt.title('Posição em Y por tempo')
 plt.show()
 data.close()
 cap.release()
