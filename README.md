@@ -61,6 +61,6 @@
   <li>
   Próximas atualizações
   <br>
-  <p>Atualização na otimização do programa; Utilizar resolução dinâmica para que o mesmo código sirva para diferentes vídeos do mesmo tipo; Atomização das funções condicionais e melhoramento das funções; Automatização da passagem de dados de <i>txt</i> para <i>xls</i>; Diminuição do tempo de execução; Utilização de outras linguagens para a parte de laços (C, por exemplo) e aperfeiçoamento do tratamento da imagem (diminuição de ruídos, objeto melhor detectado, sem falhas).</p>
+  <p>Atualização na otimização do programa; Diminuição do tempo de execução; Utilização de outras linguagens para a parte de laços (C, por exemplo) e aperfeiçoamento do tratamento da imagem (diminuição de ruídos, objeto melhor detectado, sem falhas).</p>
  </ol>
 

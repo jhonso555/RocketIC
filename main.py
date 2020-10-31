@@ -1,21 +1,40 @@
-import os, time, shutil, cv2, tkinter, colouring
+import os, time, shutil, cv2, tkinter, fileinput, colouring, pickle, colorsys
 import numpy as np
 import matplotlib.pyplot as plt
 
 #region / defining values
+#\
 print("Cleaning '/data'...")
 shutil.rmtree('./data/')
 os.mkdir('data')
 cap = cv2.VideoCapture('./src/Video_4.mp4')
 data = open('coords.txt', 'w')
 data.write("F  |  X  |  Y\n")
-frames, frame_atual, k = 1, 1, 10
+frames, frame_atual, k, i = 1, 1, 10, 0
 cX, cY, deltaTempo = [], [], []
-height  = int(cap.get(4))
-width = int(cap.get(3))
-tempoI = time.time()
-#endregion
+width, height  = int(cap.get(3)), int(cap.get(4))
+file_lower = open('list_lower.pkl', 'rb')
+file_upper = open('list_upper.pkl', 'rb')
+colorRange_lower = pickle.load(file_lower)
+colorRange_upper = pickle.load(file_upper)
 
+
+# cor_atualizada = colorsys.rgb_to_hsv(colorRange_lower[0], colorRange_lower[1], colorRange_lower[2])
+# print(cor_atualizada)
+# time.sleep(10)
+
+
+tempoI = time.time()
+
+class Colors():
+    rl = colorRange_lower[0]
+    gl = colorRange_lower[1]
+    bl = colorRange_lower[2]
+
+    ru = colorRange_upper[0]
+    gu = colorRange_upper[1]
+    bu = colorRange_upper[2]
+#endregion
 
 
 if (cap.isOpened() == False):
@@ -28,10 +47,8 @@ while(frames <= int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     
         #region // Color range and image processing 
-        # lower = np.array([150, 150, 200])
-        # upper = np.array([180, 255, 255])
-        lower = np.array([colouring.r1, colouring.g1, colouring.b1])
-        upper = np.array([colouring.r2, colouring.g2, colouring.b2])
+        lower = np.array([Colors.rl, Colors.gl, Colors.bl])
+        upper = np.array([Colors.ru, Colors.gu, Colors.bu])
 
 
 
@@ -101,7 +118,7 @@ delta = tempoF - tempoI
 print(delta)
 cY[0], cY[1] = 0, 0 
 
-plt.plot(deltaTempo, cX, cY)
+plt.plot(deltaTempo, cY)
 plt.title('Posição em Y por tempo')
 plt.show()
 data.close()
