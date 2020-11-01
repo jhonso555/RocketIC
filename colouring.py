@@ -7,9 +7,10 @@ class Window(Frame):
         super().__init__(master, cnf, **kw)
         self.open_lower = Button(self, text='Pick lower color', command=self.pick_lower)
         self.open_upper = Button(self, text='Pick upper color', command=self.pick_upper)
-        self.exit = Button(self, text='Go to Main', command=self.chamaMain)
+        self.chama_main = Button(self, text='Go to Main', command=self.chamaMain)
+        self.exit = Button(self, text='End', command=self.quit)
 
-        for b in (self.open_lower, self.open_upper, self.exit):
+        for b in (self.open_lower, self.open_upper, self.chama_main, self.exit):
             b.pack(side=LEFT, expand=YES, fill=BOTH)
         self.pack()
     

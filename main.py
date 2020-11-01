@@ -4,36 +4,34 @@ import matplotlib.pyplot as plt
 
 #region / defining values
 #\
-print("Cleaning '/data'...")
-shutil.rmtree('./data/')
-os.mkdir('data')
-cap = cv2.VideoCapture('./src/Video_4.mp4')
+
+file_lower = open('./data/list_lower.pkl', 'rb')
+file_upper = open('./data/list_upper.pkl', 'rb')
 data = open('coords.txt', 'w')
+
 data.write("F  |  X  |  Y\n")
-frames, frame_atual, k, i = 1, 1, 10, 0
-cX, cY, deltaTempo = [], [], []
-width, height  = int(cap.get(3)), int(cap.get(4))
-file_lower = open('list_lower.pkl', 'rb')
-file_upper = open('list_upper.pkl', 'rb')
 colorRange_lower = pickle.load(file_lower)
 colorRange_upper = pickle.load(file_upper)
+file_lower.close(), file_upper.close()
 
+shutil.rmtree('./data/')
+os.mkdir('data')
 
-# cor_atualizada = colorsys.rgb_to_hsv(colorRange_lower[0], colorRange_lower[1], colorRange_lower[2])
-# print(cor_atualizada)
-# time.sleep(10)
+cap = cv2.VideoCapture('./src/Video_4.mp4')
+frames, frame_atual, k = 1, 1, 10
+cX, cY, deltaTempo = [], [], []
+width, height  = int(cap.get(3)), int(cap.get(4))
 
+redLower = colorRange_lower[0]
+greenLower = colorRange_lower[1]
+blueLower = colorRange_lower[2]
+
+redUpper = colorRange_upper[0]
+greenUpper = colorRange_upper[1]
+blueUpper = colorRange_upper[2]
 
 tempoI = time.time()
 
-class Colors():
-    rl = colorRange_lower[0]
-    gl = colorRange_lower[1]
-    bl = colorRange_lower[2]
-
-    ru = colorRange_upper[0]
-    gu = colorRange_upper[1]
-    bu = colorRange_upper[2]
 #endregion
 
 
@@ -47,10 +45,8 @@ while(frames <= int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     
         #region // Color range and image processing 
-        lower = np.array([Colors.rl, Colors.gl, Colors.bl])
-        upper = np.array([Colors.ru, Colors.gu, Colors.bu])
-
-
+        lower = np.array([redLower, greenLower, blueLower])
+        upper = np.array([redUpper, greenUpper, blueUpper])
 
         mask = cv2.inRange(hsv, lower, upper) 
         # res = cv2.bitwise_and(frame,frame, mask= mask)
@@ -115,7 +111,7 @@ while(frames <= int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
 
 tempoF = time.time()
 delta = tempoF - tempoI
-print(delta)
+data.write('Tempo total de execucao: %.2f' % delta)
 cY[0], cY[1] = 0, 0 
 
 plt.plot(deltaTempo, cY)
