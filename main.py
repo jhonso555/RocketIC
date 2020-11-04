@@ -17,6 +17,7 @@ else:
     shutil.rmtree('./data/')
     os.mkdir('data')
 
+# defining values
 frames = 0
 cap = cv2.VideoCapture('./src/Video_4.mp4')
 frames, frame_atual, k = 1, 1, 10
@@ -24,7 +25,6 @@ posX, posY, deltaTempo = [], [], []
 width, height  = int(cap.get(3)), int(cap.get(4))
 tempoI = time.time()
 
-# Create a window
 cv2.namedWindow('image')
  
 # create trackbars for color change
@@ -37,7 +37,7 @@ cv2.createTrackbar('highS','image',255,255,nothing)
 cv2.createTrackbar('lowV','image',200,255,nothing)
 cv2.createTrackbar('highV','image',255,255,nothing)
 
-# Check if video is opened
+# check if video is opened
 if (cap.isOpened() == False):
     print("Error opening video file")
  
@@ -60,7 +60,6 @@ while(frames <= int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
 
         mask = cv2.inRange(hsv, lower_hsv, higher_hsv)
 
-        # // INSERT HERE OBJECT TRACKING
         if frames % 4 == 0 and frames > 19:
             for i in range(height):
                 for j in range(width):  
@@ -109,11 +108,10 @@ while(frames <= int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
     frames += 1
     frame_atual = frames
 
-    # Apply the mask on the image to extract the original color
     frame = cv2.bitwise_and(frame, frame, mask=mask)
     cv2.imshow('image', frame)
     cv2.imshow('mask', mask)
-    # Press q to exit
+
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
