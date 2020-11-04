@@ -1,121 +1,131 @@
-import os, time, shutil, cv2, tkinter, fileinput, colouring, pickle, colorsys
+import cv2, time, shutil, os
 import numpy as np
 import matplotlib.pyplot as plt
+ 
+def nothing(x):
+    pass
 
-#region / defining values
-#\
+# Open the video
+cap = cv2.VideoCapture('./src/Video_4.mp4')
 
-file_lower = open('./data/list_lower.pkl', 'rb')
-file_upper = open('./data/list_upper.pkl', 'rb')
 data = open('coords.txt', 'w')
-
 data.write("F  |  X  |  Y\n")
-colorRange_lower = pickle.load(file_lower)
-colorRange_upper = pickle.load(file_upper)
-file_lower.close(), file_upper.close()
 
-shutil.rmtree('./data/')
-os.mkdir('data')
+if os.path.isdir('./data/') == False:
+    os.mkdir('data')
+else:
+    shutil.rmtree('./data/')
+    os.mkdir('data')
 
+frames = 0
 cap = cv2.VideoCapture('./src/Video_4.mp4')
 frames, frame_atual, k = 1, 1, 10
-cX, cY, deltaTempo = [], [], []
+posX, posY, deltaTempo = [], [], []
 width, height  = int(cap.get(3)), int(cap.get(4))
-
-redLower = colorRange_lower[0]
-greenLower = colorRange_lower[1]
-blueLower = colorRange_lower[2]
-
-redUpper = colorRange_upper[0]
-greenUpper = colorRange_upper[1]
-blueUpper = colorRange_upper[2]
-
 tempoI = time.time()
 
-#endregion
+# Create a window
+cv2.namedWindow('image')
+ 
+# create trackbars for color change
+cv2.createTrackbar('lowH','image',150,179,nothing)
+cv2.createTrackbar('highH','image',179,179,nothing)
+ 
+cv2.createTrackbar('lowS','image',150,255,nothing)
+cv2.createTrackbar('highS','image',255,255,nothing)
+ 
+cv2.createTrackbar('lowV','image',200,255,nothing)
+cv2.createTrackbar('highV','image',255,255,nothing)
 
-
+# Check if video is opened
 if (cap.isOpened() == False):
     print("Error opening video file")
-
-while(frames <= int(cap.get(cv2.CAP_PROP_FRAME_COUNT))): 
+ 
+while(frames <= int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
     ret, frame = cap.read()
     
     if ret == True:
+        # get current positions of the trackbars
+        ilowH = cv2.getTrackbarPos('lowH', 'image')
+        ihighH = cv2.getTrackbarPos('highH', 'image')
+        ilowS = cv2.getTrackbarPos('lowS', 'image')
+        ihighS = cv2.getTrackbarPos('highS', 'image')
+        ilowV = cv2.getTrackbarPos('lowV', 'image')
+        ihighV = cv2.getTrackbarPos('highV', 'image')
+        
+
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    
-        #region // Color range and image processing 
-        lower = np.array([redLower, greenLower, blueLower])
-        upper = np.array([redUpper, greenUpper, blueUpper])
+        lower_hsv = np.array([ilowH, ilowS, ilowV])
+        higher_hsv = np.array([ihighH, ihighS, ihighV])
 
-        mask = cv2.inRange(hsv, lower, upper) 
-        # res = cv2.bitwise_and(frame,frame, mask= mask)
-        cv2.imshow('Frame', frame)
-        cv2.imshow('Mask', mask)
-        # cv2.imshow('Res', res)
-        #endregion
+        mask = cv2.inRange(hsv, lower_hsv, higher_hsv)
 
-        #region // object tracking and optimizing its position
+        # // INSERT HERE OBJECT TRACKING
         if frames % 4 == 0 and frames > 19:
             for i in range(height):
                 for j in range(width):  
-                    valor = mask[i][j] 
-                    if valor > 0 and frame_atual == frames:
-                        if len(cX) < 10 and len(cY) < 10: 
-                            cX.append(j)
-                            cY.append(i)
+                    pxValue = mask[i][j] 
+                    if pxValue > 0 and frame_atual == frames:
+                        if len(posX) < 10 and len(posY) < 10: 
+                            posX.append(j)
+                            posY.append(i)
                             delteatempoF = time.time()
                             deltaTempo.append(delteatempoF-tempoI)
 
 
-                        elif len(cX) >= 10 and len(cY) >= 10: 
-                            if (j > cX[k-1]) and (i > cY[k-1]):
+                        elif len(posX) >= 10 and len(posY) >= 10: 
+                            if (j > posX[k-1]) and (i > posY[k-1]):
                                                                 
-                                diffX = j-cX[k-1]
-                                diffY = i-cY[k-1]
+                                diffX = j-posX[k-1]
+                                diffY = i-posY[k-1]
                                 deltaTempoF = time.time()
-                                cX.append(cX[k-1] + (diffX/2))
-                                cY.append(cY[k-1] + (diffY/2))
+                                posX.append(posX[k-1] + (diffX/2))
+                                posY.append(posY[k-1] + (diffY/2))
                                 deltaTempo.append(deltaTempoF-tempoI)
 
-                                data.write("%d  |  %.1f  |  %.1f\n" % (frames, cX[k], cY[k])) 
+                                data.write("%d  |  %.1f  |  %.1f\n" % (frames, posX[k], posY[k])) 
                                 k += 1
                                 frame_atual += 1 
 
-                            elif (cX[k-1] > j) and (cY[k-1] > i):
-                                diffX = cX[k-1]-j
-                                diffY = cY[k-1]-i
+                            elif (posX[k-1] > j) and (posY[k-1] > i):
+                                diffX = posX[k-1]-j
+                                diffY = posY[k-1]-i
                                 deltaTempoF = time.time()
 
 
-                                cX.append(j + (diffX/2))
-                                cY.append(i + (diffY/2))
+                                posX.append(j + (diffX/2))
+                                posY.append(i + (diffY/2))
                                 deltaTempo.append(deltaTempoF-tempoI)
 
                                 
-                                data.write("%d  |  %.1f  |  %.1f\n" % (frames, cX[k], cY[k]))
+                                data.write("%d  |  %.1f  |  %.1f\n" % (frames, posX[k], posY[k]))
                                 k += 1
                                 frame_atual += 1
                         
-            np.savetxt('./data/' + str(frames) + '.txt', mask, fmt='%d')
-        #endregion
-
-        if cv2.waitKey(25) & 0xFF == ord('q'):
-            break
-    
+            np.savetxt('./data/' + str(frames) + '.txt', mask, fmt='%d')    
     else:
         break
-
+    
     frames += 1
-    frame_atual = frames 
+    frame_atual = frames
+
+    # Apply the mask on the image to extract the original color
+    frame = cv2.bitwise_and(frame, frame, mask=mask)
+    cv2.imshow('image', frame)
+    cv2.imshow('mask', mask)
+    # Press q to exit
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
 
 tempoF = time.time()
 delta = tempoF - tempoI
 data.write('Tempo total de execucao: %.2f' % delta)
-cY[0], cY[1] = 0, 0 
+posY[0], posY[1] = 0, 0 
 
-plt.plot(deltaTempo, cY)
+plt.plot(deltaTempo, posY)
 plt.title('Posição em Y por tempo')
 plt.show()
 data.close()
 cap.release()
+cv2.destroyAllWindows()
